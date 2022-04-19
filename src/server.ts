@@ -47,7 +47,7 @@ const sinc = async () => {
       } catch (e) {
         console.error(e);
       }
-    }, 4000 * idx);
+    }, 6000 * idx);
   });
 };
 
