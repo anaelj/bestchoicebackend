@@ -23,6 +23,8 @@ const sinc = async () => {
     setTimeout(async () => {
       const sfDocRef = doc(db, "tickers", docItem.id);
 
+      console.log("id:", docItem.id);
+
       try {
         await runTransaction(db, async (transaction) => {
           const sfDoc = await transaction.get(sfDocRef);
@@ -30,12 +32,46 @@ const sinc = async () => {
             throw "Document does not exist!";
           }
 
-          const newDataStatus = await getStatusInvestData(
-            docItem.data().name.toString()
+          let newDataStatus = {};
+          try {
+            newDataStatus = await getStatusInvestData(
+              docItem.data().name.toString()
+            );
+          } catch (error) {
+            console.log(
+              "====> ",
+              idx,
+              docItem.data().name,
+              "statusinvest-error:",
+              error
+            );
+            return;
+          }
+          let newDataFundamentus = {};
+          try {
+            newDataFundamentus = await getFundamentusData(
+              docItem.data().name.toString()
+            );
+          } catch (error) {
+            console.log(
+              "====> ",
+              idx,
+              docItem.data().name,
+              "fundamentus-error:",
+              error
+            );
+            return;
+          }
+
+          console.log(
+            "name:",
+            docItem.data().name,
+            "status:",
+            newDataStatus,
+            "fundamentus",
+            newDataFundamentus
           );
-          const newDataFundamentus = await getFundamentusData(
-            docItem.data().name.toString()
-          );
+
           transaction.update(sfDocRef, {
             ...newDataStatus,
             ...newDataFundamentus,

@@ -1,10 +1,15 @@
 import puppeteer from "puppeteer";
 
 const getValueFromXPath = async (page: puppeteer.Page, url: string) => {
-  const elementFromXPath = (await page.$x(url))[0];
-  return await page.evaluate((el) => {
-    return el.textContent.replace(",", ".").replace("%", "").replace(" ", "");
-  }, elementFromXPath);
+  try {
+    const elementFromXPath = (await page.$x(url))[0];
+    return await page.evaluate((el) => {
+      return el.textContent.replace(",", ".").replace("%", "").replace(" ", "");
+    }, elementFromXPath);
+  } catch (error) {
+    console.log("erro na url:", url);
+    return "0";
+  }
 };
 
 export async function getStatusInvestData(ticker: string) {
@@ -46,10 +51,11 @@ export async function getStatusInvestData(ticker: string) {
     page,
     `//*[@id="indicators-section"]/div[2]/div/div[3]/div/div[4]/div/div/strong`
   ); // margem liquida
-  const haveDate = await getValueFromXPath(
+  const haveDateTemp = await getValueFromXPath(
     page,
     `//*[@id="earning-section"]/div[6]/div/div[2]/table/tbody/tr[1]/td[2]`
   ); // margem liquida
+  const haveDate = haveDateTemp === "0" ? "-" : haveDateTemp;
 
   browser.close();
 
