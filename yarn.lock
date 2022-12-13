@@ -989,6 +989,13 @@ firebase@^9.6.9:
     "@firebase/storage-compat" "0.1.11"
     "@firebase/util" "1.5.0"
 
+firestore-serializers@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/firestore-serializers/-/firestore-serializers-1.0.2.tgz#cbf27dcc341d8d01c2f87ce361f0d039a5b3697d"
+  integrity sha512-xBS1cYEcSzB6yRH73K0F+p6vXDU/DsT9xqJlrOJYJNNto9rKjJHAmAX2C5dU6ShT58OXMDZCz3PEgS5V53NREg==
+  dependencies:
+    lodash "^4.17.21"
+
 forwarded@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
@@ -1185,6 +1192,11 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
+
+lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 long@^4.0.0:
   version "4.0.0"
