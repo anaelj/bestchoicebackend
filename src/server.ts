@@ -50,21 +50,7 @@ const sinc = async () => {
     const mapSites = async (idxSite: number) => {
       const site = sites[idxSite];
 
-      console.log("------------> 1");
-
       const data = await getValueSiteData(site, tickerName);
-      console.log("------------> 5", data);
-
-      // const dataWithValues: any = {};
-
-      // // data?.forEach((item: any) => {
-      // Object.entries(data).map((prop) => {
-      //   const [propName, propValue] = prop;
-      //   dataWithValues[propName] = propValue;
-      // });
-      // });
-
-      console.log("------------> 6");
 
       if (data) {
         await runTransaction(db, async (transaction) => {

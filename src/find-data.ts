@@ -1,10 +1,11 @@
 import puppeteer from "puppeteer";
+import { apiInvestidor10 } from "./api/apiInvestidor10";
 import { ISite } from "./interfaces";
 
 const getValueFromXPath = async (page: puppeteer.Page, url: string) => {
   try {
     const elementFromXPath = (await page.$x(url))[0];
-    return await page.evaluate((el) => {
+    return await page.evaluate((el, attr) => {
       return el?.textContent
         .replaceAll(",", ".")
         .replaceAll("%", "")
@@ -32,11 +33,41 @@ export async function getValueSiteData(
       timeout: 0,
     });
 
+    let data: any = {};
+
+    try {
+      if (site.url.includes("investidor10")) {
+        const tickerId = await page.$eval("#follow-company-mobile", (element) =>
+          element.getAttribute("data-id")
+        );
+
+        const response = await apiInvestidor10
+          .get(`historico-indicadores/${tickerId}/10`)
+          .catch((error) => console.log("error-apiinvestidor10", error));
+
+        const pls = response?.data["P/L"];
+        if (pls) {
+          const plsObj = pls
+            .filter((item: any) => item.year !== "Atual")
+            .map(
+              (item: any, idx: number) =>
+                `{ "pl${idx + 1}": "${item?.value.toFixed(2)}"}`
+            );
+
+          plsObj.forEach((element: any) => {
+            data = { ...data, ...JSON.parse(element) };
+          });
+        }
+
+        // console.log(tickerId);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     console.log(site.url.replace("#tickername", ticker));
 
     if (!site?.fields) return {};
-
-    let data: any = {};
 
     await Promise.all(
       Object.entries(site?.fields).map(async (prop) => {
@@ -44,6 +75,7 @@ export async function getValueSiteData(
         let value;
         try {
           value = await getValueFromXPath(page, propValue);
+          if (value === "-" || value === "--") value = undefined;
         } catch (error) {
           console.log(error);
         }
