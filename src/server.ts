@@ -12,22 +12,13 @@ import { getValueSiteData } from "./find-data";
 import { ISite, ITicker } from "./interfaces";
 
 import { serializeQuerySnapshot } from "firestore-serializers";
+import { getRentData } from "./api/apiIqb3";
 
 const app = express();
 
 app.get("/", (req, res) => {
   res.send("Well done!");
 });
-
-const convertArrayToObject = (array: [], key: any) => {
-  const initialValue = {};
-  return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item[key]]: item,
-    };
-  }, initialValue);
-};
 
 export const firestore = getFirestore(db.app);
 
@@ -51,6 +42,7 @@ const sinc = async () => {
       const site = sites[idxSite];
 
       const data = await getValueSiteData(site, tickerName);
+      const rentData = await getRentData(tickerName);
 
       if (data) {
         await runTransaction(db, async (transaction) => {
@@ -61,6 +53,7 @@ const sinc = async () => {
 
           transaction.update(tickerRef, {
             ...data,
+            ...rentData,
           });
         });
       }
@@ -73,6 +66,21 @@ const sinc = async () => {
   };
 
   await mapTickers(0);
+
+  // const data = await getValueSiteData(
+  //   {
+  //     url: "https://www.iqb3.com.br/btc/#tickername",
+  //     fields: [
+  //       {
+  //         propName: "qtdAlugada",
+  //         propValue: '//*[@id="myTable"]/tbody/tr[1]/td[6]',
+  //       },
+  //     ],
+  //   },
+  //   "b3sa3"
+  // );
+
+  // console.log(data);
 };
 
 app.listen(process.env.PORT, () => {

@@ -28,7 +28,7 @@ export async function getValueSiteData(
 
     page.setDefaultNavigationTimeout(0);
 
-    await page.goto(site.url.replace("#tickername", ticker), {
+    await page.goto(site?.url?.replace("#tickername", ticker), {
       waitUntil: "load",
       timeout: 0,
     });
