@@ -36,9 +36,13 @@ const sinc = async () => {
 
     const tickerRef = doc(db, "tickers", ticker.__id__);
 
+    const currentDate = new Date().toLocaleDateString();
+
     const tickerName = ticker.name.toString();
 
     const mapSites = async (idxSite: number) => {
+      // if (currentDate.toString() === ticker?.lastUpdate?.toString()) return;
+
       const site = sites[idxSite];
 
       const data = await getValueSiteData(site, tickerName);
@@ -54,6 +58,7 @@ const sinc = async () => {
           transaction.update(tickerRef, {
             ...data,
             ...rentData,
+            lastUpdate: currentDate,
           });
         });
       }
@@ -66,21 +71,6 @@ const sinc = async () => {
   };
 
   await mapTickers(0);
-
-  // const data = await getValueSiteData(
-  //   {
-  //     url: "https://www.iqb3.com.br/btc/#tickername",
-  //     fields: [
-  //       {
-  //         propName: "qtdAlugada",
-  //         propValue: '//*[@id="myTable"]/tbody/tr[1]/td[6]',
-  //       },
-  //     ],
-  //   },
-  //   "b3sa3"
-  // );
-
-  // console.log(data);
 };
 
 app.listen(process.env.PORT, () => {

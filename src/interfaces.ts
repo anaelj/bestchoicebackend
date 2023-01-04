@@ -15,4 +15,5 @@ export interface ITicker {
   priceEquitValue: number;
   debitOfEbitida: number;
   profitMarginLiquid: number;
+  lastUpdate?: Date;
 }

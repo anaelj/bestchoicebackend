@@ -10,9 +10,12 @@ const apiAlugueis = axios.create({
 export const getRentData = async (ticker: string) => {
   try {
     const res = await apiAlugueis.get(ticker);
-    const lastQuantityRent1 = res.data.abertas[res.data.abertas.length - 1];
-    const lastQuantityRent2 = res.data.abertas[res.data.abertas.length - 2];
-    const lastQuantityRent3 = res.data.abertas[res.data.abertas.length - 3];
+    const lastQuantityRent1 =
+      res.data.abertas[res.data.abertas.length - 1]?.toString();
+    const lastQuantityRent2 =
+      res.data.abertas[res.data.abertas.length - 2]?.toString();
+    const lastQuantityRent3 =
+      res.data.abertas[res.data.abertas.length - 3]?.toString();
     const average =
       res.data.abertas.reduce((a: number, b: number) => a + b, 0) /
       res.data.abertas.length;
@@ -21,7 +24,7 @@ export const getRentData = async (ticker: string) => {
       lastQuantityRent1,
       lastQuantityRent2,
       lastQuantityRent3,
-      rentAverage: average?.toFixed(),
+      rentAverage: average?.toFixed()?.toString(),
     };
 
     return rentData;
