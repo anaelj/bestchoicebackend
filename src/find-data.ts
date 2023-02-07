@@ -10,7 +10,8 @@ const getValueFromXPath = async (page: puppeteer.Page, url: string) => {
         .replaceAll(",", ".")
         .replaceAll("%", "")
         .replaceAll(" ", "")
-        .replaceAll("\n", "");
+        .replaceAll("\n", "")
+        .replaceAll("R$", "");
     }, elementFromXPath);
   } catch (error) {
     console.log(error);
@@ -37,29 +38,31 @@ export async function getValueSiteData(
 
     try {
       if (site.url.includes("investidor10")) {
-        const tickerId = await page.$eval("#follow-company-mobile", (element) =>
-          element.getAttribute("data-id")
-        );
+        let tickerId;
+        try {
+          tickerId = await page.$eval("#follow-company-mobile", (element) =>
+            element.getAttribute("data-id")
+          );
+        } catch (error) {}
 
-        const response = await apiInvestidor10
-          .get(`historico-indicadores/${tickerId}/10`)
-          .catch((error) => console.log("error-apiinvestidor10", error));
+        if (tickerId) {
+          const response = await apiInvestidor10
+            .get(`historico-indicadores/${tickerId}/10`)
+            .catch((error) => console.log("error-apiinvestidor10", error));
+          const pls = response?.data["P/L"];
+          if (pls) {
+            const plsObj = pls
+              .filter((item: any) => item.year !== "Atual")
+              .map(
+                (item: any, idx: number) =>
+                  `{ "pl${idx + 1}": "${item?.value.toFixed(2)}"}`
+              );
 
-        const pls = response?.data["P/L"];
-        if (pls) {
-          const plsObj = pls
-            .filter((item: any) => item.year !== "Atual")
-            .map(
-              (item: any, idx: number) =>
-                `{ "pl${idx + 1}": "${item?.value.toFixed(2)}"}`
-            );
-
-          plsObj.forEach((element: any) => {
-            data = { ...data, ...JSON.parse(element) };
-          });
+            plsObj.forEach((element: any) => {
+              data = { ...data, ...JSON.parse(element) };
+            });
+          }
         }
-
-        // console.log(tickerId);
       }
     } catch (error) {
       console.log(error);
