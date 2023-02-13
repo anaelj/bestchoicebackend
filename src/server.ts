@@ -68,7 +68,8 @@ const sinc = async () => {
     const tickerName = ticker.name.toString();
 
     const mapSites = async (idxSite: number) => {
-      // if (currentDate.toString() === ticker?.lastUpdate?.toString()) return;
+      console.log(currentDate.toString(), ticker?.lastUpdate?.toString());
+      if (currentDate.toString() === ticker?.lastUpdate?.toString()) return;
 
       const site = sites[idxSite];
 

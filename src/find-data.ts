@@ -29,7 +29,15 @@ export async function getValueSiteData(
 
     page.setDefaultNavigationTimeout(0);
 
-    await page.goto(site?.url?.replace("#tickername", ticker), {
+    const hasInvestidor10 = site?.url?.includes("investidor10");
+    const hasBDR = ticker.includes("34");
+
+    const newUrl =
+      hasBDR && hasInvestidor10
+        ? site?.url?.replace("acoes", "bdrs")
+        : site?.url;
+
+    await page.goto(newUrl.replace("#tickername", ticker), {
       waitUntil: "load",
       timeout: 0,
     });
@@ -37,7 +45,7 @@ export async function getValueSiteData(
     let data: any = {};
 
     try {
-      if (site.url.includes("investidor10")) {
+      if (hasInvestidor10) {
         let tickerId;
         try {
           tickerId = await page.$eval("#follow-company-mobile", (element) =>
@@ -68,7 +76,7 @@ export async function getValueSiteData(
       console.log(error);
     }
 
-    console.log(site.url.replace("#tickername", ticker));
+    console.log(newUrl.replace("#tickername", ticker));
 
     if (!site?.fields) return {};
 
